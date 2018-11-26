@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Venice.Models
 {
@@ -7,6 +8,10 @@ namespace Venice.Models
     {
         public long Id { get; set; }
         public long ProductId { get; set; }
+        [NotMapped]
+        public String strImageUrl { get; set; }
+        [NotMapped]
+        public String strImageType { get; set; }
         public bool IsPrimaryImage { get; set; }
         public byte[] Data { get; set; }
 

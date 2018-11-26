@@ -26,6 +26,13 @@ namespace Venice
         {
             services.AddCors();
             services.AddDbContext<VeniceDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDistributedMemoryCache(); // Adds a default in-memory implementation of IDistributedCache
+            services.AddSession(options =>
+            {
+                // Set a short timeout for easy testing.
+                options.IdleTimeout = TimeSpan.FromMinutes(20);
+                options.Cookie.HttpOnly = true;
+            });
             services.AddMvc();
         }
 
@@ -46,8 +53,11 @@ namespace Venice
                 app.UseExceptionHandler("/Home/Error");
             }
 
+          
+
             app.UseStaticFiles();
             app.UseDefaultFiles();
+            app.UseSession();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
@@ -58,6 +68,8 @@ namespace Venice
                     name: "spa-fallback",
                     defaults: new { controller = "Home", action = "Index" });
             });
+
+           
         }
     }
 }

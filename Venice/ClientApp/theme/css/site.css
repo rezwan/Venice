@@ -364,12 +364,6 @@ a, a:hover, a:visited, a:active {
 
 /* ----------------------- Grid ------------------------- */
 
-.GridArea {
-}
-
-.GridFilterBox {
-}
-
 .grid-filter-header {
     display: block !important;
 }
@@ -443,11 +437,26 @@ width : 100px;
 }
 .d-block {
     display: inline-block;
-    float:left;
     background-color:floralwhite;
     border-color:lightgray;
     padding:4px;
 }
 .form-control {
 width:90%;
+}
+
+.qty-text {
+    width: 40px;
+    height: 25px;
+    text-align: center;
+}
+
+.qty-plus {
+    width: 25px;
+    height: 25px;
+}
+
+.qty-minus {
+    width: 25px;
+    height: 25px;
 }

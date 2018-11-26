@@ -1,11 +1,14 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
+import 'isomorphic-fetch';
 
 interface ProductAddState {
     justFileServiceResponse: string;
     formServiceResponse: string;
     fields: {};
     files: any[];
+    images: any[];
+    mainImage: string;
 }
 export class ProductAdd extends React.Component<RouteComponentProps<{}>, ProductAddState> {
     constructor(props) {
@@ -20,11 +23,17 @@ export class ProductAdd extends React.Component<RouteComponentProps<{}>, Product
             justFileServiceResponse: 'Click to upload!',
             formServiceResponse: 'Click to upload the form!',
             fields: {},
-            files: []
+            files: [],
+            images: [],
+            mainImage: ''
+
         }
 
+        this.showImages();
+
     }
-    
+
+
     uploadJustFile(e) {
         e.preventDefault();
         let state = this.state;
@@ -37,7 +46,8 @@ export class ProductAdd extends React.Component<RouteComponentProps<{}>, Product
         if (!state.hasOwnProperty('files')) {
             this.setState({
                 ...state,
-                justFileServiceResponse: 'First select a file!'
+                justFileServiceResponse: 'First select a file!',
+
             });
             return;
         }
@@ -48,22 +58,30 @@ export class ProductAdd extends React.Component<RouteComponentProps<{}>, Product
             var element = state.files[index];
             form.append('file', element);
         }
-        /*
-        axios.post('uploader/justfile', form)
-            .then((result) => {
-                let message = "Success!"
-                if (!result.data.success) {
-                    message = result.data.message;
-                }
-                this.setState({
-                    ...state,
-                    justFileServiceResponse: message
+
+        fetch('api/ProductDetail/UploadJustFile',
+            {
+                method: 'POST',
+                body: form,
+            }).then(response => response.json())
+            .then(data => {
+                this.setState((state) => {
+                    return { mainImage: data.strImageUrl }
                 });
-            })
-            .catch((ex) => {
-                console.error(ex);
+                this.showImages();
             });
-        */
+    }
+
+    showImages() {
+        fetch('api/ProductDetail/getImages')
+            .then(response => response.json())
+            .then(data => {
+                this.setState((state) => {
+                    return { images: data, mainImage: data.length > 0 ? data[0].strImageUrl : '' };
+                });
+                console.log(this.state.images);
+            });
+
     }
 
     uploadForm(e) {
@@ -84,10 +102,6 @@ export class ProductAdd extends React.Component<RouteComponentProps<{}>, Product
         }
 
         let form = new FormData();
-        for (var index = 0; index < state.files.length; index++) {
-            var element = state.files[index];
-            form.append('file', element);
-        }
 
         for (var key in state.fields) {
             if (state.fields.hasOwnProperty(key)) {
@@ -95,22 +109,17 @@ export class ProductAdd extends React.Component<RouteComponentProps<{}>, Product
                 form.append(key, element);
             }
         }
-        /*
-        axios.post('uploader/upload', form)
-            .then((result) => {
-                let message = "Success!"
-                if (!result.data.success) {
-                    message = result.data.message;
-                }
-                this.setState({
-                    ...state,
-                    formServiceResponse: message
-                });
-            })
-            .catch((ex) => {
-                console.error(ex);
+
+        fetch('api/ProductDetail/InsertProduct',
+            {
+                method: 'POST',
+                body: form,
+            }).then(response => response.json())
+            .then(data => {
+                console.log('yeeee');
+                this.showImages();
             });
-            */
+
     }
 
     filesOnChange(sender) {
@@ -147,23 +156,21 @@ export class ProductAdd extends React.Component<RouteComponentProps<{}>, Product
                             <div className="col-12 col-md-5">
                                 <div className="single_product_thumb">
                                     <div id="product_details_slider" className="carousel slide" data-ride="carousel">
+                                        <img src={this.state.mainImage} style={{ width: '400px' }} />
 
-                                        <img src={require('../theme/Image/sample1.jpg')} style={{ width: '400px' }} />
 
-                                        <div className="carousel-inner">
-                                            <div className="carousel-item active">
-                                                <img className="d-block w-100" src={require('../theme/Image/sample1.jpg')} />
-                                            </div>
-                                            <div className="carousel-item">
-                                                <img className="d-block w-100" src={require('../theme/Image/sample2.jpg')} />
-                                            </div>
-                                            <div className="carousel-item">
-                                                <img className="d-block w-100" src={require('../theme/Image/sample3.jpg')} />
-                                            </div>
-                                            <div className="carousel-item">
-                                                <img className="d-block w-100" src={require('../theme/Image/sample3.jpg')} />
-                                            </div>
-                                        </div>
+                                        {this.state.images.map(image =>
+                                           
+                                                <span className="carousel-item active">
+                                                   
+                                                <span className="w-100 text-center">
+                                                    <img className="d-block w-100" src={image.strImageUrl} />
+                                                    <label>x</label>
+                                                    </span>
+                                                </span>
+                                           
+                                        )}
+
                                     </div>
                                 </div>
                             </div>
@@ -172,49 +179,51 @@ export class ProductAdd extends React.Component<RouteComponentProps<{}>, Product
                                 <div className="single_product_desc">
                                     <form>
 
-                                    <div className="form-group">
-                                        <label >Product Photo Upload</label>
-                                        <input type="file" id="case-one" onChange={this.filesOnChange} />
-                                        <p className="help-block">Example block-level help text here.</p>
-                                        <button type="text" onClick={this.uploadJustFile}>Upload just file</button>
-                                    </div>
-
-                                    <div className="form-group">
-                                        <label>Product Name</label>
-                                        <input type="password" className="form-control" id="exampleInputPassword1" placeholder="Product Name"/>
-                                    </div>
-                                    <div className="form-group">
-                                        <label>Current Price</label>
-                                        <div className="quantity">
-                                            <span className="qty-minus" ><i className="fa fa-minus" aria-hidden="true"></i></span>
-                                            <input type="number" className="qty-text" id="qty" step="1" min="1" max="12" name="quantity" value="1" onChange={this.fieldOnChange} />
-                                            <span className="qty-plus" ><i className="fa fa-plus" aria-hidden="true"></i></span>
+                                        <div className="form-group">
+                                            <label >Product Photo Upload</label>
+                                            <input type="file" id="case-one" onChange={this.filesOnChange} />
+                                            <p className="help-block">Example block-level help text here.</p>
+                                            <button type="text" onClick={this.uploadJustFile}>Upload just file</button>
                                         </div>
-                                    </div>
-
-                                    <div className="form-group">
-                                        <label>Quantity</label>
-                                        <div className="quantity">
-                                            <span className="qty-minus" ><i className="fa fa-minus" aria-hidden="true"></i></span>
-                                            <input type="number" className="qty-text" id="qty" step="1" min="1" max="12" name="quantity" value="1" onChange={this.fieldOnChange}/>
-                                            <span className="qty-plus" ><i className="fa fa-plus" aria-hidden="true"></i></span>
+                                    </form>
+                                    <form>
+                                        <div className="form-group">
+                                            <label>Product Name</label>
+                                            <input type="text" className="form-control" id="exampleInputPassword1" placeholder="Product Name" name="productName" onChange={this.fieldOnChange}/>
                                         </div>
-                                    </div>
+                                        <div className="form-group">
+                                            <label>Current Price</label>
+                                            <div className="quantity">
+                                                <span className="qty-minus" ><i className="fa fa-minus" aria-hidden="true"></i></span>
+                                                <input type="number" className="qty-text" id="qty" step="1" min="1" max="12" name="price" value="1" onChange={this.fieldOnChange} />
+                                                <span className="qty-plus" ><i className="fa fa-plus" aria-hidden="true"></i></span>
+                                            </div>
+                                        </div>
 
-                                    <div className="form-group">
-                                        <label>Product Description</label>
-                                        <textarea className="form-control" placeholder="Product Description." onChange={this.fieldOnChange}></textarea>
-                                    </div>
+                                        <div className="form-group">
+                                            <label>Quantity</label>
+                                            <div className="quantity">
+                                                <input type='button' value='-' className='fa fa-minus' />
+                                                <input type="number" className=" text-center" id="qty" step="1" min="1" max="12" name="quantity" key="test" value="1" onChange={this.fieldOnChange} />
+                                               
+                                                <input type='button' value='+' className='fa fa-plus' />
+                                            </div>
+                                        </div>
 
-                                    <div className="form-group">
-                                        <label>Additional Information</label>
-                                        <textarea className="form-control" placeholder="Additional Information" onChange={this.fieldOnChange}></textarea>
-                                    </div>
+                                        <div className="form-group">
+                                            <label>Product Description</label>
+                                            <textarea className="form-control" placeholder="Product Description." name="productDetail" onChange={this.fieldOnChange}></textarea>
+                                        </div>
 
-                                    <input type="file" onChange={this.filesOnChange} />
-                                    <p className="available">Available: <span className="text-muted">In Stock</span></p>
-                                    <br />
-                                    <button type="text" onClick={this.uploadForm}>Upload form </button>
+                                        <div className="form-group">
+                                            <label>Additional Information</label>
+                                            <textarea className="form-control" placeholder="Additional Information" name="aditionalInformation" onChange={this.fieldOnChange}></textarea>
+                                        </div>
+
+                                        <input type="file" onChange={this.filesOnChange} />
+                                        <p className="available">Available: <span className="text-muted">In Stock</span></p>
+                                        <br />
+                                        <button type="text" onClick={this.uploadForm}>Upload form </button>
                                     </form>
                                 </div>
                             </div>
