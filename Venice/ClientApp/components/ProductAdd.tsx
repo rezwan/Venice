@@ -146,14 +146,12 @@ export class ProductAdd extends React.Component<RouteComponentProps<{}>, Product
     public render() {
         return <div>
             <div className="page-header FocusHeader">
-                <h1>FUN SAMPLE</h1>
+                <h1>Product Details</h1>
             </div>
             <section className="panel">
-                <section className="single_product_details_area section_padding_0_100">
-                    <div className="container">
+                    <div className="container panel-body">
                         <div className="row">
-
-                            <div className="col-12 col-md-5">
+                            <div className="col-md-5">
                                 <div className="single_product_thumb">
                                     <div id="product_details_slider" className="carousel slide" data-ride="carousel">
                                         <img src={this.state.mainImage} style={{ width: '400px' }} />
@@ -175,61 +173,78 @@ export class ProductAdd extends React.Component<RouteComponentProps<{}>, Product
                                 </div>
                             </div>
 
-                            <div className="col-12 col-md-7">
+                            <div className="col-md-6">
                                 <div className="single_product_desc">
                                     <form>
-
-                                        <div className="form-group">
-                                            <label >Product Photo Upload</label>
-                                            <input type="file" id="case-one" onChange={this.filesOnChange} />
-                                            <p className="help-block">Example block-level help text here.</p>
-                                            <button type="text" onClick={this.uploadJustFile}>Upload just file</button>
-                                        </div>
-                                    </form>
-                                    <form>
-                                        <div className="form-group">
-                                            <label>Product Name</label>
-                                            <input type="text" className="form-control" id="exampleInputPassword1" placeholder="Product Name" name="productName" onChange={this.fieldOnChange}/>
-                                        </div>
-                                        <div className="form-group">
-                                            <label>Current Price</label>
-                                            <div className="quantity">
-                                                <span className="qty-minus" ><i className="fa fa-minus" aria-hidden="true"></i></span>
-                                                <input type="number" className="qty-text" id="qty" step="1" min="1" max="12" name="price" value="1" onChange={this.fieldOnChange} />
-                                                <span className="qty-plus" ><i className="fa fa-plus" aria-hidden="true"></i></span>
+                                        <div className="panel panel-success">
+                                            <div className="panel-heading" >Product Photo Upload</div>
+                                        <div className="panel-body">
+                                            <input type="file" id="case-one" className="btn" onChange={this.filesOnChange} />
+                                            <button type="button" onClick={this.uploadJustFile} className="btn btn-primary">Upload image</button>
                                             </div>
                                         </div>
+                                    </form>
+                                    <form className="form-horizontal">
+                                        <div className="panel panel-success">
 
-                                        <div className="form-group">
-                                            <label>Quantity</label>
-                                            <div className="quantity">
-                                                <input type='button' value='-' className='fa fa-minus' />
-                                                <input type="number" className=" text-center" id="qty" step="1" min="1" max="12" name="quantity" key="test" value="1" onChange={this.fieldOnChange} />
-                                               
-                                                <input type='button' value='+' className='fa fa-plus' />
+                                            <div className="panel-heading" >Product Details:</div>
+                                            <div className="panel-body">
+
+                                                <div className="form-group">
+                                                    <label className="col-sm-4 control-label">Name</label>
+                                                    <div className="col-sm-8">
+                                                        <input className="form-control" id="focusedInput" type="text" value="Product Name" name="productName" onChange={this.fieldOnChange} />                                                     
+                                                    </div>
+                                                </div>
+
+                                                <div className="form-group">
+                                                    <label className="col-sm-4 control-label">Current Price</label>
+                                                    <div className="col-sm-8">
+                                                        <input type="number" className="form-control" id="qty" step="1" min="1" max="12" name="price"  onChange={this.fieldOnChange} />                                                      
+                                                     </div>
+                                                </div>    
+
+                                                <div className="form-group">
+                                                    <label className="col-sm-4 control-label">Quantity</label>
+                                                    <div className="col-sm-8">                                                        
+                                                        <input type="number" className="form-control" id="qty" step="1" min="1" max="12" name="quantity" key="test" value="1" onChange={this.fieldOnChange} />                                               
+                                                    </div>
+                                                </div>
+
+                                                <div className="form-group">
+                                                    <label className="col-sm-4 control-label">Product Description</label>
+                                                    <div className="col-sm-8"> 
+                                                        <textarea className="form-control" placeholder="Product Description." name="productDetail" onChange={this.fieldOnChange}></textarea>
+                                                    </div>
+                                                </div>
+
+                                                <div className="form-group">
+                                                    <label className="col-sm-4 control-label">Additional Information</label>
+                                                    <div className="col-sm-8"> 
+                                                        <textarea className="form-control" placeholder="Additional Information" name="aditionalInformation" onChange={this.fieldOnChange}></textarea>
+                                                    </div>
+                                                 </div>
+                                                
+                                                <div className="form-group">
+                                                    <label className="col-sm-4 control-label">Available</label>
+                                                    <div className="col-sm-8">
+                                                        <label className="text-muted control-label">In Stock</label>
+                                                    </div>
+                                                </div>  
+
+                                                <div className="form-group">
+                                                    <label className="col-sm-4 control-label"></label>
+                                                    <div className="col-sm-8">
+                                                        <button type="text" className="btn btn-primary" onClick={this.uploadForm}>Upload form </button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-
-                                        <div className="form-group">
-                                            <label>Product Description</label>
-                                            <textarea className="form-control" placeholder="Product Description." name="productDetail" onChange={this.fieldOnChange}></textarea>
-                                        </div>
-
-                                        <div className="form-group">
-                                            <label>Additional Information</label>
-                                            <textarea className="form-control" placeholder="Additional Information" name="aditionalInformation" onChange={this.fieldOnChange}></textarea>
-                                        </div>
-
-                                        <input type="file" onChange={this.filesOnChange} />
-                                        <p className="available">Available: <span className="text-muted">In Stock</span></p>
-                                        <br />
-                                        <button type="text" onClick={this.uploadForm}>Upload form </button>
-                                    </form>
+                                     </form>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </section>
             </section>
         </div>;
     }
